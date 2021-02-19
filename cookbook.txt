@@ -1,0 +1,348 @@
+***Chapter 1***
+
+(e.g., ls, cd, grep, cat) are, in a sense, bash commands
+
+which command searches your $PATH 
+$ which java 
+$ /usr/bin/java
+
+---------------------------------------------
+
+ls -d
+
+nadav@black-kiti:~/automation-with-bash$ ll
+total 24
+drwxrwxr-x  3 nadav nadav 4096 Feb 18 11:57 ./
+drwxr-xr-x 62 nadav nadav 4096 Feb 18 11:52 ../
+-rw-rw-r--  1 nadav nadav  166 Feb 18 11:57 cookbook.txt
+drwxrwxr-x  8 nadav nadav 4096 Feb 18 11:57 .git/
+-rw-rw-r--  1 nadav nadav 1815 Feb 18 11:57 .gitignore
+-rw-rw-r--  1 nadav nadav   22 Feb 18 11:52 README.md
+nadav@black-kiti:~/automation-with-bash$ 
+
+nadav@black-kiti:~/automation-with-bash$ ls -d .git*
+.git  .gitignore
+
+* matches any string, including the null string, while ? matches any single character.
+
+f?o would match foo or fao but not fooo.
+
+
+-----------------------------------------
+
+.[!.]*
+
+[] denotes a list
+of characters to match, but the leading ! negates the list. So here we are looking for a
+dot, followed by any character that is not a dot, followed by any number of any characters.
+nadav@black-kiti:~/automation-with-bash$ echo .[!.]*
+.git .gitignore
+
+-----------------------------------------
+$ ls -d .v*
+.vim .viminfo
+$ ls -d .v*/
+.vim
+$
+.vimrc
+
+ with .v*/  so the ls command only shows directories that match the pattern
+
+ .??* to match anything starting with a dot that is also at least three characters long.
+
+$ touch ..foo .a .normal_dot_file normal_file
+$ ls -a
+. .. ..foo .a .normal_dot_file normal_file
+$ ls -d .??*
+..foo .normal_dot_file
+$ ls -d .[!.]*
+.a .normal_dot_file
+$ ls -d .[!.]* .??* | sort -u
+..foo
+.a
+.normal_dot_file
+
+$ echo 'A coffee is $5?!'
+A coffee is $5?!
+
+----------------------------------------
+
+
+To mix some shell expansions with some literal strings you may use the shell escape
+character \ or change your quoting.
+
+$ echo 'A coffee is $5 for' "$USER" '?!'
+A coffee is $5 for jp ?!
+$ echo "A coffee is \$5 for $USER?\!"
+A coffee is $5 for jp?\!
+$ echo "A coffee is \$5 for $USER?! "
+A coffee is $5 for jp?!
+
+
+# We'll get a continuation prompt since we now have unbalanced quotes
+$ echo '$USER won't pay $5 for coffee.'
+> ^C
+# WRONG
+$ echo "$USER won't pay $5 for coffee."
+jp won't pay for coffee.
+
+# Works
+$ echo "$USER won't pay \$5 for coffee."
+jp won't pay $5 for coffee.
+# Also works
+$ echo 'I won'\''t pay $5 for coffee.'
+I won't pay $5 for coffee.
+
+-------------------------------------
+
+nadav@black-kiti:~/bashcookbook-examples$ cat /etc/shells 
+# /etc/shells: valid login shells
+/bin/sh
+/bin/bash
+/usr/bin/bash
+/bin/rbash
+/usr/bin/rbash
+/bin/dash
+/usr/bin/dash
+/usr/bin/ksh2020
+/usr/bin/rksh2020
+/usr/bin/tmux
+
+
+change your default shell: 
+chsh -s /bin/bash
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+***_CHAPTER 2_***
+
+When you run a program, you still have to connect it to output files and input files.
+
+
+dosomething < inputfile > outputfile
+
+---------------------------
+
+
+
+$ echo Please wait.
+Please wait.
+$
+
+
+quotes added, will preserve our spacing :
+echo "this was very widelyspaced"
+
+
+----------------------------
+
+Writing Output with More Formatting Control:
+
+$ printf '%s = %d\n' Lines $LINES
+Lines = 24
+$
+
+
+
+
+
+
+$ printf '%10.10s = %4.2f\n' 'Gigahertz' 1.92735
+Gigahertz = 1.93
+$
+
+-----------------------------
+
+Saving Output from a Command:
+Use the > symbol to tell the shell to redirect the output into a file.
+
+$ echo fill it up
+fill it up
+$ echo fill it up > file.txt
+$
+
+
+echo some more data > /tmp/echo.out
+echo some more data > ../../over.here
+
+$ ls > /tmp/save.out
+$ cat /tmp/save.out
+a.out
+cong.txt
+def.conf
+file.txt
+more.txt
+zebra.list
+$
+
+This time we’ll use the -C option:
+$ ls -C > /tmp/save.out
+$ cat /tmp/save.out
+a.out cong.txt def.conf file.txt more.txt zebra.list
+$
+----------------------------------------
+
+Sending Output and Error Messages to the Same File:
+
+both is just our (imaginary) program that is going to generate output to both STDERR and STDOUT.
+$ both 2> outfile 1>&2
+The 1 indicates standard output and the 2 standard error.
+
+-----------------------------------------
+Saving or Grouping Output from Several Commands :
+
+Two approaches
+
+braces ( { } ) to group these commands together ,  he braces need to have
+whitespace around them, and the last command inside the list must terminate with a semicolon (That’s not required when you use parentheses):
+$ { pwd; ls; cd ../elsewhere; pwd; ls; } > /tmp/all.out
+
+
+Alternatively, you could use parentheses, () , to tell bash to run the commands in a
+subshell, then redirect the output of the entire subshell’s execution. For example:
+(pwd; ls; cd ../elsewhere; pwd; ls) > /tmp/all.out
+
+The braces are just a way to group
+several commands together, more like a shorthand for our redirecting, so that we
+don’t have to redirect each command separately.
+
+Commands enclosed in parentheses,
+however, run in another instance of the shell, a child of the current shell called a sub‐
+shell.
+
+Now here is the big difference in using the subshell approach:
+because a subshell is used to execute the cd commands, when the subshell exits, your
+main shell remains where it started.
+
+One interesting thing you can do with braces is form more concise branching blocks :
+
+You can shorten this:
+if [ $result = 1 ]; then
+    echo "Result is 1; excellent."
+    exit 0
+else
+    echo "Uh-oh, ummm, RUN AWAY! "
+    exit 120
+fi
+
+
+[ $result = 1 ] \
+    && { echo "Result is 1; excellent." ; exit 0; } \
+    || { echo "Uh-oh, ummm, RUN AWAY! " ; exit 120; }
+
+
+-----------------------------------------------
+You want to take the output from one program and use it as the input of another program :
+$ cat one.file another.file > /tmp/cat.out
+$ sort < /tmp/cat.out
+...
+$ rm /tmp/cat.out
+$
+
+
+
+Or you could do all of that in one step, sending the output directly to the next pro‐
+gram, by using the pipe symbol ( | ) to connect them : 
+
+$ cat one.file another.file | sort
+
+
+You can also link a sequence of several commands together by using multiple pipes:
+$ cat my* | tr 'a-z' 'A-Z' | sort | uniq | awk -f transform.awk | wc
+
+
+--------------------------------------------
+
+You want to debug a long sequence of piped I/O, such as:
+$ cat my* | tr 'a-z' 'A-Z' | uniq | awk -f transform.awk | wc
+
+The solution to these problems is to use what plumbers call a T-joint in the pipes. For
+bash, that means using the tee command to split the output into two identical
+streams, one that is written to a file and the other that is written to standard output,
+so as to continue the sending of data along the pipes.
+For this example where we’d like to debug a long string of pipes, we insert the tee
+command between uniq and awk:
+... uniq | tee /tmp/x.x | awk -f transform.awk ...
+
+
+The tee command writes the output to the filename(s) specified as its parameter and
+also writes that same output to standard out.
+
+
+
+
+
+
+$ find / -name '*.c' -print | less
+could find a lot of C source files, so the output will likely scroll off the window. Using
+more or less will let you look at the output in manageable pieces, but once completed
+they don’t let you go back and look at that output without rerunning the command.
+
+$ find / -name '*.c' -print | more > ~/automation-with-bash/res.txt
+
+(learn bout tail -f)
+
+The tee command can be used instead of the simple redirection of standard output:
+$ find / -name '*.c' -print | tee /tmp/all.my.sources
+
+Notice, too, that in these examples we did not redirect standard error at all. This
+means that any errors, like you might expect from find, will be printed to the screen
+but won’t show up in the tee file. We could add a 2>&1 to the find command:
+find / -name '*.c' -print 2>&1 | tee /tmp/all.my.sources
+
+to include the error output in the tee file. It won’t be neatly separated, but it will be
+captured.
+
+Connecting Two Programs by Using Output as Argument :
+
+how can we get the output of a previously run command (e.g., echo or ls) onto the
+command line?
+
+
+
+
+Use the command substitution feature of bash:
+rm $(find . -name '*.class')
+The $() encloses a command that is run in a subshell.
+
+
+Using Multiple Redirects on One Line :
+
+$ divert 3> file.three 4> file.four 5> file.five 6> else.where
+
+we explained that each file descriptor is indicated by a number, starting
+at zero: standard input is 0 , standard output is 1 , and standard error is 2 . If no num‐
+ber is given, 1 is assumed. That means that you could redirect standard output with
+the slightly more verbose 1> (rather than a simple > ) followed by a filename, but
+there’s no need; the shorthand > is fine. It also means that you can have the shell open
+up any number of arbitrary file descriptors and have them set to write various files so
+that the program that the shell then invokes from the command line can use these
+opened file descriptors without further ado.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+vocabolary:
+disentangling - מתפרק
+abbreviations - תצורה
+ubiquitous - נמצא בכל מקום
+quirky - משונה
+punctuation - פיסוק
+trailing - נגרר
+abbreviate - לְקַצֵר
+negates - שולל
+precedence - עֲדִיפוּת
+substitutions - החלפות
+disconcerting - מטריד
+
+define a shell function (see Recipe 10.4)
