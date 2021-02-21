@@ -1,5 +1,7 @@
 #!/bin/bash
-
+# nadav@black-kiti:~/automation-with-bash/streams$ ./detecting-redirection.sh $(< dumy.txt)
+# Username: dumy
+# stdin coming from keyboard
 
 echo "Username: $1";
 
