@@ -1,7 +1,4 @@
 #!/bin/bash
-export FNAME
-export SIZE
-export MAX
 
 
 
@@ -11,6 +8,9 @@ MAX=2048
 SIZE=9922
 FNAME=/tmp/scratch/yyy
 
+export FNAME
+export SIZE
+export MAX
 
 
 #Separating Variable Names from Surrounding Text
@@ -46,7 +46,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 #printf ${BASH_SOURCE[0]}
 echo $DIR
 DIR+="/variables.sh"
-echo $DIR
+echo "$DIR"
 # source /home/nadav/automation-with-bash/shell-variables/variables.sh
 
 # RES= ""

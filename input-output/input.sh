@@ -8,5 +8,6 @@
 # read -t 3 -p "answer quickly: " ANSWER
 
 
-read -s -p "password: " PASSWD
-printf "%b" "\n"
+read -s -p  "password: " PASSWD
+printf "%s" $PASSWD "/n"
+export PASSWD

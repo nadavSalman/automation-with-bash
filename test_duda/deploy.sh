@@ -1,8 +1,8 @@
 #!/bin/bash
-source ~/conf
+# source ~/conf
 
 # constants
-TIMEOUT_SECS=30
+# TIMEOUT_SECS=30
 
 # remove from elb and wait for instance to be actually removed
 # get instance id as script argument
@@ -58,17 +58,16 @@ deploy_instance() {
 #main
 main() {
     # load variables inside conf
-    source conf
 	echo "ELB URL is: $ELB_URL"
 	#get the list of instances from the LB
 
 	#loop over all instances in the LB (no need to change)
-	for current in $list; do
-		echo now at: $current
-		remove_from_lb_and_wait $current
- 		deploy_instance $current
-		insert_into_lb_and_wait $current
-	done
+	# for current in $list; do
+	# 	echo now at: $current
+	# 	remove_from_lb_and_wait $current
+ 	# 	deploy_instance $current
+	# 	insert_into_lb_and_wait $current
+	# done
 }
 
 main
