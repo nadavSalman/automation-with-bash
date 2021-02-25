@@ -11,8 +11,6 @@ STR1="i love banana"
 STR2="i hete"
 echo ${#STR1}
 
-LENGTH1=$(expr length "$STR2")
-echo $LENGTH1
 
 
 
