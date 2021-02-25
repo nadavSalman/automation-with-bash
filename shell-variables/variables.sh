@@ -35,7 +35,7 @@ export NAME="bmw123"
 
 #Using Parameters in a Shell Script
 # simple shell script
-echo $1
+echo "$1"
 
 
 
@@ -44,7 +44,7 @@ echo $1
 #lets source the current script :
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 #printf ${BASH_SOURCE[0]}
-echo $DIR
+echo "$DIR"
 DIR+="/variables.sh"
 echo "$DIR"
 # source /home/nadav/automation-with-bash/shell-variables/variables.sh

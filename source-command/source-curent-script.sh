@@ -7,8 +7,7 @@
 #lets source the current script in order to get for the curent shell the init variables:
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 #printf ${BASH_SOURCE[0]}
-echo $DIR
+echo "$DIR"
 DIR+="/source-curent-script.sh"
-echo $DIR
-
+echo "$DIR"
 #source $DIR

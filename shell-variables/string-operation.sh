@@ -8,7 +8,6 @@
 
 
 STR1="i love banana"
-STR2="i hete"
 echo ${#STR1}
 
 
