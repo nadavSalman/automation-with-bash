@@ -3,8 +3,8 @@
 #
 # change permissions on a bunch of files
 #
-for FN in $*
+for FN in "$@"
 do
-    echo changing $FN
-    chmod 0750 $FN
+    echo changing "$FN"
+    chmod 0750 "$FN"
 done
