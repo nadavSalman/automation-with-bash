@@ -9,5 +9,5 @@
 
 
 read -r -s -p  "password: " PASSWD
-printf "%s" $PASSWD "/n"
+printf "%s" "$PASSWD" "/n"
 export PASSWD
